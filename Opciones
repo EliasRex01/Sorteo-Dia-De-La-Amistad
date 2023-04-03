@@ -1,0 +1,1326 @@
+public class Participante {
+    private String nombre;
+    private String apellido;
+    private Long numerodetelefono;
+    private String email;
+    private String preferencia;
+
+    public Participante(String nombre, String apellido, Long numerodetelefono, String email, String preferencia) throws Exception {
+        if (nombre == null || nombre.isEmpty() || apellido == null || apellido.isEmpty()
+                || numerodetelefono == null || email == null || email.isEmpty() || preferencia == null || preferencia.isEmpty()) {
+            throw new Exception("Todos los campos son obligatorios.");
+        }
+        Pattern patternTelefono = Pattern.compile("(\\d{2}\\s)?(\\+\\d{4}\\s)?\\d{8,9}");
+        Matcher matcherTelefono = patternTelefono.matcher(numerodetelefono.toString());
+        if (!matcherTelefono.matches()) {
+            throw new Exception("El número de teléfono no es válido.");
+        }
+        Pattern patternEmail = Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+        Matcher matcherEmail = patternEmail.matcher(email);
+        if (!matcherEmail.matches()) {
+            throw new Exception("El correo electrónico no es válido.");
+        }
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.numerodetelefono = numerodetelefono;
+        this.email = email;
+        this.preferencia = preferencia;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public Long getNumerodetelefono() {
+        return numerodetelefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPreferencia() {
+        return preferencia;
+    }
+}
+
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+public class Sorteo {
+    private ArrayList<Participante> participantes;
+    private HashMap<String, String> asignaciones;
+
+    public Sorteo() {
+        participantes = new ArrayList<>();
+        asignaciones = new HashMap<>();
+    }
+
+    public void agregarParticipante(Participante participante) {
+        participantes.add(participante);
+    }
+
+    public void realizarSorteo() {
+        Collections.shuffle(participantes);
+        int totalParticipantes = participantes.size();
+        for (int i = 0; i < totalParticipantes; i++) {
+            int indexAmigo = (i + 1) % totalParticipantes;
+            Participante participante = participantes.get(i);
+            Participante amigo = participantes.get(indexAmigo);
+            while (amigo == participante) {
+                indexAmigo = (indexAmigo + 1) % totalParticipantes;
+                amigo = participantes.get(indexAmigo);
+            }
+            asignaciones.put(participante.getNombre(), amigo.getNombre());
+            String mensaje = "Hola " + participante.getNombre() + ", tu amigo es " + amigo.getNombre() + ".";
+            switch (participante.getPreferencia().toLowerCase()) {
+                case "wts":
+                case "whatsapp":
+                    mensaje += " Se te enviará un mensaje de WhatsApp.";
+                    break;
+                case "sms":
+                case "mensaje":
+                case "mensaje normal":
+                    mensaje += " Se te enviará un mensaje normal.";
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+public class Sorteo {
+    private ArrayList<Participante> participantes;
+    private HashMap<String, String> asignaciones;
+
+    public Sorteo() {
+        participantes = new ArrayList<>();
+        asignaciones = new HashMap<>();
+    }
+
+    public void agregarParticipante(Participante participante) {
+        participantes.add(participante);
+    }
+
+    public void realizarSorteo() {
+        Collections.shuffle(participantes);
+        int totalParticipantes = participantes.size();
+        for (int i = 0; i < totalParticipantes; i++) {
+            Participante participante = participantes.get(i);
+            String amigoAsignado = participantes.get((i + 1) % totalParticipantes).getNombreCompleto();
+            while (amigoAsignado.equals(participante.getNombreCompleto())) {
+                amigoAsignado = participantes.get((i + 1) % totalParticipantes).getNombreCompleto();
+            }
+            asignaciones.put(participante.getNombreCompleto(), amigoAsignado);
+        }
+    }
+
+    public void enviarMensajes() {
+        for (Participante participante : participantes) {
+            String mensaje = "Hola " + participante.getNombreCompleto() + ", tu amigo es " + asignaciones.get(participante.getNombreCompleto());
+            if (participante.getPreferencia().equalsIgnoreCase("wts")) {
+                System.out.println("A " + participante.getNombreCompleto() + " se le envió la asignación de su amigo al WhatsApp");
+            } else if (participante.getPreferencia().equalsIgnoreCase("sms")) {
+                System.out.println("A " + participante.getNombreCompleto() + " se le envió la asignación de su amigo al SMS");
+            } else if (participante.getPreferencia().equalsIgnoreCase("correo")) {
+                System.out.println("A " + participante.getNombreCompleto() + " se le envió la asignación de su amigo al correo electrónico");
+            }
+            System.out.println(mensaje);
+        }
+    }
+
+    public void guardarAsignaciones() {
+        // Código para guardar las asignaciones en un archivo de auditoría
+    }
+}
+Esta clase tiene un ArrayList llamado participantes donde se almacenan los objetos de tipo Participante, y un HashMap llamado asignaciones que almacena las asignaciones de amigos de cada participante.
+
+El método agregarParticipante se utiliza para agregar objetos Participante al ArrayList.
+
+El método realizarSorteo se encarga de realizar el sorteo de manera aleatoria y asignar un amigo a cada participante. En este método, primero se utiliza el método shuffle de la clase Collections para desordenar aleatoriamente los elementos del ArrayList participantes. Luego se recorre el ArrayList y se asigna al i-ésimo participante el amigo siguiente de manera circular, asegurándose de que no se asigne a sí mismo.
+
+El método enviarMensajes se utiliza para enviar mensajes simulados a cada participante de acuerdo a su preferencia de contacto y también se imprime en pantalla un mensaje que indica a qué medio de contacto se le envió la asignación de su amigo.
+
+El método guardarAsignaciones se encarga de guardar las asignaciones en un archivo de auditoría, pero todavía falta implementar este método.
+
+
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
+public class Sorteo {
+
+    private ArrayList<Participante> participantes;
+    private HashMap<String, String> asignaciones;
+
+    public Sorteo() {
+        participantes = new ArrayList<>();
+        asignaciones = new HashMap<>();
+    }
+
+    public void agregarParticipante(Participante participante) {
+        participantes.add(participante);
+    }
+
+    public void realizarSorteo() throws Exception {
+        // Validamos que hay al menos dos participantes para realizar el sorteo
+        if (participantes.size() < 2) {
+            throw new Exception("No hay suficientes participantes para realizar el sorteo");
+        }
+
+        // Desordenamos aleatoriamente los participantes
+        Random random = new Random();
+        for (int i = 0; i < participantes.size(); i++) {
+            int j = random.nextInt(participantes.size());
+            Participante temp = participantes.get(i);
+            participantes.set(i, participantes.get(j));
+            participantes.set(j, temp);
+        }
+
+        // Asignamos amigos a cada participante
+        for (int i = 0; i < participantes.size(); i++) {
+            Participante participante = participantes.get(i);
+            Participante amigoAsignado = participantes.get((i + 1) % participantes.size());
+            while (amigoAsignado == participante) {
+                amigoAsignado = participantes.get((i + 1) % participantes.size());
+            }
+            asignaciones.put(participante.getNombre(), amigoAsignado.getNombre() + " " + amigoAsignado.getApellido());
+        }
+
+        // Enviamos un mensaje simulado a cada participante
+        for (Participante participante : participantes) {
+            String mensaje = "Hola " + participante.getNombre() + ", tu amigo es " + asignaciones.get(participante.getNombre());
+            switch (participante.getPreferencia()) {
+                case "wts":
+                    System.out.println("A " + participante.getNombre() + " se le envió la asignación de su amigo por WhatsApp");
+                    break;
+                case "sms":
+                    System.out.println("A " + participante.getNombre() + " se le envió la asignación de su amigo por SMS");
+                    break;
+                case "correo":
+                    System.out.println("A " + participante.getNombre() + " se le envió la asignación de su amigo por correo electrónico");
+                    break;
+                default:
+                    System.out.println("No se pudo enviar la asignación a " + participante.getNombre() + " porque la preferencia no es válida");
+            }
+            // Aquí iría el código para enviar el mensaje simulado a través del medio correspondiente
+        }
+
+        // Guardamos las asignaciones en un archivo de auditoría
+        // Aquí iría el código para guardar las asignaciones en un archivo
+    }
+
+    public ArrayList<Participante> getParticipantes() {
+        return participantes;
+    }
+
+    public HashMap<String, String> getAsignaciones() {
+        return asignaciones;
+    }
+}
+Esta clase tiene un constructor que inicializa los atributos participantes y asignaciones como un ArrayList y un HashMap vacíos, respectivamente. También tiene un método agregarParticipante() para agregar un objeto Participante al ArrayList participantes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import java.io.IOException;
+import java.util.Scanner;
+
+public class Menu {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Archivo archivo = null;
+        Sorteo sorteo = null;
+
+        while (true) {
+            System.out.println("Seleccione una opción:");
+            System.out.println("1. Cargar participantes");
+            System.out.println("2. Realizar sorteo");
+            System.out.println("3. Salir");
+
+            int opcion = sc.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    try {
+                        System.out.println("Ingrese el nombre del archivo: ");
+                        String nombreArchivo = sc.next();
+                        archivo = new Archivo(nombreArchivo);
+                        System.out.println("Archivo cargado exitosamente");
+                    } catch (IOException e) {
+                        System.out.println("Error al cargar el archivo: " + e.getMessage());
+                    } catch (ArchivoInvalidoException e) {
+                        System.out.println("Error en el archivo: " + e.getMessage());
+                    }
+                    break;
+                case 2:
+                    if (archivo == null) {
+                        System.out.println("Debe cargar el archivo primero");
+                    } else {
+                        sorteo = new Sorteo(archivo.getParticipantes());
+                        sorteo.realizarSorteo();
+                        System.out.println("Sorteo realizado
+
+
+
+
+
+
+
+
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class Archivo {
+    private String nombreArchivo;
+
+    public Archivo(String nombreArchivo) {
+        this.nombreArchivo = nombreArchivo;
+    }
+
+    public ArrayList<Participante> cargarParticipantes() throws IOException {
+        ArrayList<Participante> listaParticipantes = new ArrayList<Participante>();
+        BufferedReader br = new BufferedReader(new FileReader(nombreArchivo));
+        String linea;
+        while ((linea = br.readLine()) != null) {
+            String[] datos = linea.split(",");
+            Participante participante = new Participante(datos[0], datos[1], datos[2], datos[3], datos[4]);
+            listaParticipantes.add(participante);
+        }
+        br.close();
+        return listaParticipantes;
+    }
+}
+
+
+
+
+
+public class Participante {
+    private String nombre;
+    private String apellido;
+    private String telefono;
+    private String correo;
+    private String preferencia;
+
+    public Participante(String nombre, String apellido, String telefono, String correo, String preferencia) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.correo = correo;
+        this.preferencia = preferencia;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public String getPreferencia() {
+        return preferencia;
+    }
+}
+
+
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+
+public class Sorteo {
+    private ArrayList<Participante> listaParticipantes;
+
+    public Sorteo(ArrayList<Participante> listaParticipantes) {
+        this.listaParticipantes = listaParticipantes;
+    }
+
+    public void realizarSorteo() throws Exception {
+        if (listaParticipantes.size() < 2) {
+            throw new Exception("La lista de participantes debe tener al menos dos elementos.");
+        }
+        ArrayList<Participante> listaFiltrada = new ArrayList<Participante>();
+        for (Participante participante : listaParticipantes) {
+            int count = 0;
+            for (Participante otroParticipante : listaParticipantes) {
+                if (participante != otroParticipante && participante.getNombre().equals(otroParticipante.getNombre()) &&
+                        participante.getApellido().equals(otroParticipante.getApellido()) &&
+                        participante.getTelefono().equals(otroParticipante.getTelefono()) &&
+                        participante.getCorreo().equals(otroParticipante.getCorreo())) {
+                    count++;
+                    if (count > 1) {
+                        break;
+                    }
+                }
+            }
+            if (count <= 1) {
+                listaFiltrada.add(participante);
+            }
+        }
+        if (listaFiltrada.size() < 2) {
+            throw new Exception("La lista de participantes filtrada debe tener al menos dos elementos.");
+        }
+        Random random = new Random();
+        Collections.shuffle(listaFiltrada, random);
+        for (int i = 0; i < listaFiltrada.size(); i++) {
+            Participante participanteActual = listaFiltrada.get(i);
+            Participante participanteAsignado;
+            if
+//aqui se pauso el proceso
+                    
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+
+public class Sorteo {
+    private ArrayList<Participante> participantes;
+
+    public Sorteo(ArrayList<Participante> participantes) {
+        this.participantes = participantes;
+    }
+
+    public void realizarSorteo() {
+        if (participantes.size() < 2) {
+            System.out.println("No hay suficientes participantes para realizar el sorteo.");
+            return;
+        }
+
+        System.out.println("Realizando sorteo...\n");
+
+        // Se realiza el sorteo de forma aleatoria
+        long seed = System.nanoTime();
+        Collections.shuffle(participantes, new Random(seed));
+
+        // Se muestra el ganador del sorteo
+        Participante ganador = participantes.get(0);
+        System.out.println("El ganador del sorteo es:");
+        System.out.println(ganador);
+
+        // Se muestran los demás participantes en orden aleatorio
+        System.out.println("\nLos demás participantes son (en orden aleatorio):");
+        for (int i = 1; i < participantes.size(); i++) {
+            System.out.println(participantes.get(i));
+        }
+    }
+}
+
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Archivo {
+    private String nombreArchivo;
+    private ArrayList<Participante> participantes;
+
+    public Archivo(String nombreArchivo) {
+        this.nombreArchivo = nombreArchivo;
+        this.participantes = new ArrayList<>();
+        this.cargarParticipantes();
+    }
+
+    private void cargarParticipantes() {
+        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (datos.length != 5) {
+                    System.out.println("Error: la línea '" + linea + "' no tiene el formato adecuado.");
+                    continue;
+                }
+                String nombre = datos[0].trim();
+                String apellido = datos[1].trim();
+                String telefono = datos[2].trim();
+                String correo = datos[3].trim();
+                String preferencia = datos[4].trim();
+                Participante participante = new Participante(nombre, apellido, telefono, correo, preferencia);
+                if (participantes.contains(participante)) {
+                    System.out.println("Advertencia: se encontró un participante duplicado en el archivo. " +
+                            "Se ha eliminado la entrada duplicada: " + participante);
+                } else {
+                    participantes.add(participante);
+                }
+            }
+            System.out.println("Se han cargado " + participantes.size() + " participantes.");
+        } catch (IOException e) {
+            System.out.println("Error al leer el archivo: " + e.getMessage());
+        }
+    }
+
+    public ArrayList<Participante> getParticipantes() {
+        return participantes;
+    }
+}
+
+
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Menu {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Archivo archivo = null;
+        Sorteo sorteo = null;
+
+        while (true) {
+            System.out.println("\n===== Menú =====");
+            System.out.println("1. Cargar participantes");
+            System.out.println("2. Realizar sorteo");
+            System.out.println("3.
+
+
+
+
+import java.util.ArrayList;
+import java.util.Random;
+
+public class Sorteo {
+    private ArrayList<Participante> participantes;
+
+    public Sorteo(ArrayList<Participante> participantes) {
+        this.participantes = participantes;
+    }
+
+    public Participante obtenerGanador() {
+        Random rand = new Random();
+        int index = rand.nextInt(participantes.size());
+        return participantes.get(index);
+    }
+}
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Menu {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        ArrayList<Participante> participantes = null;
+
+        while (true) {
+            System.out.println("===== MENU =====");
+            System.out.println("1. Cargar participantes");
+            System.out.println("2. Realizar sorteo");
+            System.out.println("3. Salir del programa");
+
+            int opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    try {
+                        System.out.print("Ingrese la ruta del archivo CSV: ");
+                        String ruta = scanner.next();
+                        participantes = Archivo.cargarParticipantes(ruta);
+                        System.out.println("Se han cargado " + participantes.size() + " participantes.");
+                    } catch (IOException e) {
+                        System.out.println("Error al cargar el archivo: " + e.getMessage());
+                    }
+                    break;
+                case 2:
+                    if (participantes != null) {
+                        Sorteo sorteo = new Sorteo(participantes);
+                        Participante ganador = sorteo.obtenerGanador();
+                        System.out.println("El ganador del sorteo es: " + ganador.getNombre() + " " + ganador.getApellido());
+                    } else {
+                        System.out.println("Debe cargar los participantes primero.");
+                    }
+                    break;
+                case 3:
+                    System.out.println("Gracias por utilizar el programa.");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
+                    break;
+            }
+        }
+    }
+}
+
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Archivo {
+    private List<Participante> participantes;
+
+    public Archivo(String nombreArchivo) throws IOException, ArchivoException {
+        participantes = new ArrayList<>();
+        cargarParticipantes(nombreArchivo);
+        eliminarDuplicados();
+    }
+
+    private void cargarParticipantes(String nombreArchivo) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (datos.length != 4) {
+                    throw new ArchivoException("Formato de línea incorrecto: " + linea);
+                }
+                participantes.add(new Participante(datos[0], datos[1], datos[2], datos[3]));
+            }
+        }
+    }
+
+    private void eliminarDuplicados() throws ArchivoException {
+        for (int i = 0; i < participantes.size(); i++) {
+            Participante p1 = participantes.get(i);
+            for (int j = i + 1; j < participantes.size(); j++) {
+                Participante p2 = participantes.get(j);
+                if (p1.mismasDatos(p2)) {
+                    throw new ArchivoException("Se encontraron dos participantes con los mismos datos: " + p1 + ", " + p2);
+                }
+            }
+        }
+    }
+
+    public List<Participante> getParticipantes() {
+        return participantes;
+    }
+
+    public static class Participante {
+        private String nombre;
+        private String apellido;
+        private String telefono;
+        private String correo;
+
+        public Participante(String nombre, String apellido, String telefono, String correo) {
+            this.nombre = nombre;
+            this.apellido = apellido;
+            this.telefono = telefono;
+            this.correo = correo;
+        }
+
+        public boolean mismasDatos(Participante otro) {
+            return nombre.equalsIgnoreCase(otro.nombre) && apellido.equalsIgnoreCase(otro.apellido)
+                    && telefono.equalsIgnoreCase(otro.telefono) && correo.equalsIgnoreCase(otro.correo);
+        }
+
+        @Override
+        public String toString() {
+            return nombre + " " + apellido + " (" + telefono + ", " + correo + ")";
+        }
+    }
+}
+
+En esta implementación, la clase Archivo tiene una lista de objetos Participante, que se cargan del archivo CSV en el constructor de la clase. El método cargarParticipantes se encarga de leer las líneas del archivo y crear un objeto Participante por cada línea, mientras que el método eliminarDuplicados se encarga de buscar duplicados entre los participantes y lanzar una excepción ArchivoException en caso de encontrarlos.
+
+La clase Participante es una clase interna de Archivo y tiene cuatro campos: nombre, apellido, telefono y correo. La clase tiene un método mismasDatos que compara si otro objeto Participante tiene los mismos valores en estos cuatro campos.
+
+
+
+
+
+
+
+
+
+
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class Participante {
+    private String nombre;
+    private String apellido;
+    private Long numerodetelefono;
+    private String email;
+    private String preferencia;
+    private static final String CSV_SEPARATOR = ",";
+
+    public Participante(String nombre, String apellido, Long numerodetelefono, String email, String preferencia) throws Exception {
+        if (!validateNombre(nombre)) {
+            throw new Exception("Error: El nombre solo debe contener letras.");
+        }
+
+        if (!validateApellido(apellido)) {
+            throw new Exception("Error: El apellido solo debe contener letras.");
+        }
+
+        if (!validateNumerodetelefono(numerodetelefono)) {
+            throw new Exception("Error: El número de teléfono debe tener 10 dígitos.");
+        }
+
+        if (!validateEmail(email)) {
+            throw new Exception("Error: El formato del correo electrónico es incorrecto.");
+        }
+
+        if (!validatePreferencia(preferencia)) {
+            throw new Exception("Error: La preferencia solo puede ser 'wts', 'sms' o 'correo'.");
+        }
+
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.numerodetelefono = numerodetelefono;
+        this.email = email;
+        this.preferencia = preferencia;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) throws Exception {
+        if (!validateNombre(nombre)) {
+            throw new Exception("Error: El nombre solo debe contener letras.");
+        }
+
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) throws Exception {
+        if (!validateApellido(apellido)) {
+            throw new Exception("Error: El apellido solo debe contener letras.");
+        }
+
+        this.apellido = apellido;
+    }
+
+    public Long getNumerodetelefono() {
+        return numerodetelefono;
+    }
+
+    public void setNumerodetelefono(Long numerodetelefono) throws Exception {
+        if (!validateNumerodetelefono(numerodetelefono)) {
+            throw new Exception("Error: El número de teléfono debe tener 10 dígitos.");
+        }
+
+        this.numerodetelefono = numerodetelefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) throws Exception {
+        if (!validateEmail(email)) {
+            throw new Exception("Error: El formato del correo electrónico es incorrecto.");
+        }
+
+        this.email = email;
+    }
+
+    public String getPreferencia() {
+        return preferencia;
+    }
+
+    public void setPreferencia(String preferencia) throws Exception {
+        if (!validatePreferencia(preferencia)) {
+            throw new Exception("Error: La preferencia solo puede ser 'wts', 'sms' o 'correo'.");
+        }
+
+        this.preferencia = preferencia;
+    }
+
+    private boolean validateNombre(String nombre) {
+        return Pattern.matches("[a-zA-Z]+", nombre);
+    }
+
+    private boolean validateApellido(String apellido) {
+        return Pattern.matches("[a-zA-Z]+", apellido);
+    }
+
+    private boolean validateNumerodetelefono(Long numerodetelefono) {
+        return String.valueOf(numerodetelefono).length() == 10;
+   
+
+
+//codigo participante comepleto
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Participante {
+    private String nombre;
+    private String apellido;
+    private long numerodetelefono;
+    private String email;
+    private String preferencia;
+
+    public Participante(String nombre, String apellido, long numerodetelefono, String email, String preferencia) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.numerodetelefono = numerodetelefono;
+        this.email = email;
+        this.preferencia = preferencia;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public long getNumerodetelefono() {
+        return numerodetelefono;
+    }
+
+    public void setNumerodetelefono(long numerodetelefono) {
+        this.numerodetelefono = numerodetelefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPreferencia() {
+        return preferencia;
+    }
+
+    public void setPreferencia(String preferencia) {
+        this.preferencia = preferencia;
+    }
+
+    @Override
+    public String toString() {
+        return "Participante [nombre=" + nombre + ", apellido=" + apellido + ", numerodetelefono=" + numerodetelefono
+                + ", email=" + email + ", preferencia=" + preferencia + "]";
+    }
+
+    public static List<Participante> leerArchivo(String archivo) throws IOException, FormatoInvalidoException {
+        List<Participante> participantes = new ArrayList<>();
+        Pattern pattern = Pattern.compile("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] campos = linea.split(",");
+                if (campos.length != 5) {
+                    throw new FormatoInvalidoException("Formato de línea inválido: " + linea);
+                }
+                String nombre = campos[0].trim();
+                String apellido = campos[1].trim();
+                long numerodetelefono = validarNumeroTelefono(campos[2].trim());
+                String email = validarEmail(campos[3].trim());
+                String preferencia = campos[4].trim();
+                if (!validarNombreApellido(nombre) || !validarNombreApellido(apellido)) {
+                    throw new FormatoInvalidoException("Nombre o apellido inválido: " + nombre + " " + apellido);
+                }
+                participantes.add(new Participante(nombre, apellido, numerodetelefono, email, preferencia));
+            }
+        }
+
+        return participantes;
+    }
+
+    private static long validarNumeroTelefono(String numeroTelefono) throws FormatoInvalidoException {
+        Pattern pattern = Pattern.compile("^(\\+?\\d{1,3}[\\s-])?(\\(?\\d{3}\\)?[\\s-])?\\d{3}[\\s-]?\\d{4}$");
+        Matcher matcher =
+
+
+
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class Participante {
+
+    private String nombre;
+    private String apellido;
+    private Long numerodetelefono;
+    private String email;
+    private String preferencia;
+
+    public Participante(String nombre, String apellido, Long numerodetelefono, String email, String preferencia) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.numerodetelefono = numerodetelefono;
+        this.email = email;
+        this.preferencia = preferencia;
+    }
+
+    public static ArrayList<Participante> leerArchivo(String nombreArchivo) throws IOException, ParticipanteException {
+        ArrayList<Participante> participantes = new ArrayList<>();
+
+        // Abrir archivo y leerlo con BufferedReader
+        BufferedReader reader = new BufferedReader(new FileReader(nombreArchivo));
+        String linea = reader.readLine(); // Descartar primera línea (encabezados)
+        while ((linea = reader.readLine()) != null) {
+            String[] datos = linea.split(",");
+
+            // Verificar si hay errores en los datos
+            if (datos.length != 5) {
+                throw new ParticipanteException("Error en la cantidad de datos para el participante: " + linea);
+            }
+            if (!datos[2].matches("(\\d{2} )?\\d{8,10}")) {
+                throw new ParticipanteException("Número de teléfono inválido para el participante: " + linea);
+            }
+            if (!datos[3].matches("[a-zA-Z0-9._]+@[a-zA-Z]+(\\.[a-zA-Z]+)+")) {
+                throw new ParticipanteException("Correo electrónico inválido para el participante: " + linea);
+            }
+            if (!datos[4].equalsIgnoreCase("wts") && !datos[4].equalsIgnoreCase("sms") && !datos[4].equalsIgnoreCase("correo")) {
+                throw new ParticipanteException("Preferencia de mensaje inválida para el participante: " + linea);
+            }
+
+            // Crear objeto Participante y agregarlo al ArrayList
+            Participante participante = new Participante(
+                    datos[0].trim(), datos[1].trim(),
+                    Long.parseLong(datos[2].replaceAll("\\s+", "")),
+                    datos[3].trim(), datos[4].trim().toLowerCase()
+            );
+            participantes.add(participante);
+        }
+        reader.close();
+
+        // Verificar si hay participantes duplicados
+        for (int i = 0; i < participantes.size() - 1; i++) {
+            for (int j = i + 1; j < participantes.size(); j++) {
+                if (participantes.get(i).equals(participantes.get(j))) {
+                    throw new ParticipanteException("Participante duplicado: " + participantes.get(i).toString());
+                }
+            }
+        }
+
+        return participantes;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public Long getNumerodetelefono() {
+        return numerodetelefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPreferencia() {
+        return preferencia;
+    }
+
+    @Override
+    public String toString() {
+        return "Participante{" +
+                "nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", numerodetelefono=" + numerodetelefono +
+                ", email='" + email
+
+
+
+//version mas completa segun gpt
+                import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+public class Participante {
+    private String nombre;
+    private String apellido;
+    private long numeroTelefono;
+    private String email;
+    private String preferencia;
+
+    public Participante(String nombre, String apellido, long numeroTelefono, String email, String preferencia) throws Exception {
+        validarNombre(nombre);
+        validarApellido(apellido);
+        validarNumeroTelefono(numeroTelefono);
+        validarEmail(email);
+        validarPreferencia(preferencia);
+
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.numeroTelefono = numeroTelefono;
+        this.email = email;
+        this.preferencia = preferencia;
+    }
+
+    public static void validarNombre(String nombre) throws Exception {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new Exception("El nombre del participante es obligatorio");
+        }
+    }
+
+    public static void validarApellido(String apellido) throws Exception {
+        if (apellido == null || apellido.trim().isEmpty()) {
+            throw new Exception("El apellido del participante es obligatorio");
+        }
+    }
+
+    public static void validarNumeroTelefono(long numeroTelefono) throws Exception {
+        String regex = "^\\+?\\d{2}?\\s?\\d{9}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(String.valueOf(numeroTelefono));
+        if (!matcher.matches()) {
+            throw new Exception("El número de teléfono debe tener el formato adecuado");
+        }
+    }
+
+    public static void validarEmail(String email) throws Exception {
+        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        if (!matcher.matches()) {
+            throw new Exception("El correo electrónico debe tener el formato adecuado");
+        }
+    }
+
+    public static void validarPreferencia(String preferencia) throws Exception {
+        if (preferencia == null || preferencia.trim().isEmpty()) {
+            throw new Exception("La preferencia del participante es obligatoria");
+        }
+    }
+
+    // Getters y setters
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) throws Exception {
+        validarNombre(nombre);
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) throws Exception {
+        validarApellido(apellido);
+        this.apellido = apellido;
+    }
+
+    public long getNumeroTelefono() {
+        return numeroTelefono;
+    }
+
+    public void setNumeroTelefono(long numeroTelefono) throws Exception {
+        validarNumeroTelefono(numeroTelefono);
+        this.numeroTelefono = numeroTelefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) throws Exception {
+        validarEmail(email);
+        this.email = email;
+    }
+
+    public String getPreferencia() {
+        return preferencia;
+    }
+
+    public void setPreferencia(String preferencia) throws Exception {
+        validarPreferencia(preferencia);
+        this.preferencia = preferencia;
+    }
+}
+
+
+//sorteo
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+public class Sorteo {
+    private ArrayList<Participante> participantes;
+    private HashMap<String, String> asignaciones;
+
+    public Sorteo() {
+        participantes = new ArrayList<>();
+        asignaciones = new HashMap<>();
+    }
+
+    public void agregarParticipante(Participante participante) {
+        participantes.add(participante);
+    }
+
+    public void realizarSorteo() throws Exception {
+        if (participantes.size() < 2) {
+            throw new Exception("Debe haber al menos dos participantes para realizar el sorteo.");
+        }
+        Collections.shuffle(participantes); // Desordena aleatoriamente la lista de participantes
+        for (int i = 0; i < participantes.size(); i++) {
+            Participante participanteActual = participantes.get(i);
+            Participante amigoAsignado = null;
+            for (int j = i + 1; j < participantes.size(); j++) {
+                Participante posibleAmigo = participantes.get(j);
+                if (!posibleAmigo.getNombre().equals(participanteActual.getNombre()) &&
+                        !posibleAmigo.getApellido().equals(participanteActual.getApellido()) &&
+                        !posibleAmigo.getNumerodetelefono().equals(participanteActual.getNumerodetelefono()) &&
+                        !posibleAmigo.getEmail().equals(participanteActual.getEmail())) {
+                    amigoAsignado = posibleAmigo;
+                    break;
+                }
+            }
+            if (amigoAsignado == null) {
+                throw new Exception("No se pudo asignar un amigo para " + participanteActual.getNombre() + " " + participanteActual.getApellido() + ".");
+            }
+            asignaciones.put(participanteActual.getNombre(), amigoAsignado.getNombre()); // Agrega la asignación al HashMap
+        }
+        // Envía los mensajes simulados a cada participante
+        for (Participante participante : participantes) {
+            String mensaje = "A " + participante.getNombre() + " se le envió la asignación de su amigo al " + participante.getPreferencia() + ".";
+            System.out.println(mensaje);
+        }
+        // Guarda las asignaciones en un archivo de auditoría
+        try {
+            FileWriter writer = new FileWriter("auditoria.txt");
+            for (String nombre : asignaciones.keySet()) {
+                String linea = nombre + " -> " + asignaciones.get(nombre) + "\n";
+                writer.write(linea);
+            }
+            writer.close();
+        } catch (IOException e) {
+            throw new Exception("No se pudo guardar el archivo de auditoría.");
+        }
+    }
+}
+
+En esta clase, se usa un algoritmo que desordena aleatoriamente la lista de participantes y luego asigna el amigo siguiente de manera circular (asegurándose de que no se asigne a sí mismo). Para evitar asignaciones repetidas, se verifica que los posibles amigos asignados no tengan el mismo nombre, apellido, número de teléfono y correo que el participante actual.
+
+Además, se envían mensajes simulados a cada participante según su preferencia y se guarda un archivo de auditoría con las asignaciones realizadas.
+
+Cualquier posible error se mapea mediante objetos Exception.
+
+No, me faltó agregar el método para guardar las asignaciones en un archivo de auditoría. 
+public void guardarAsignaciones(String nombreArchivo) throws IOException {
+    FileWriter writer = new FileWriter(nombreArchivo);
+    for (Participante p : participantes) {
+        String asignacion = asignaciones.get(p.getNombre());
+        writer.write(p.getNombre() + "," + p.getApellido() + "," + asignacion + "\n");
+    }
+    writer.close();
+}
+
+Este método crea un FileWriter para escribir en un archivo de texto con el nombre indicado por nombreArchivo. Luego recorre la lista de participantes y guarda en el archivo el nombre, apellido y asignación de cada participante en formato CSV. Finalmente, cierra el archivo.
+
+
+//menu
+import java.util.Scanner;
+
+public class Menu {
+    
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final String PARTICIPANTES_RUTA = "ruta/participantes.csv";
+    private static final String AUDITORIA_RUTA = "ruta/auditoria.txt";
+    
+    public static void main(String[] args) {
+        
+        boolean salir = false;
+        Participante participante = new Participante(PARTICIPANTES_RUTA);
+        Sorteo sorteo = new Sorteo(participante.getParticipantes());
+        
+        while (!salir) {
+            System.out.println("MENU:");
+            System.out.println("1. Cargar participantes");
+            System.out.println("2. Realizar sorteo");
+            System.out.println("3. Salir");
+            System.out.print("Ingrese una opción: ");
+            String opcion = scanner.nextLine();
+            switch (opcion) {
+                case "1":
+                    try {
+                        participante.cargarParticipantes();
+                        System.out.println("Participantes cargados correctamente.");
+                    } catch (Exception e) {
+                        System.out.println("Error al cargar los participantes: " + e.getMessage());
+                    }
+                    break;
+                case "2":
+                    try {
+                        sorteo.realizarSorteo();
+                        sorteo.enviarMensajes();
+                        sorteo.guardarAuditoria(AUDITORIA_RUTA);
+                        System.out.println("Sorteo realizado correctamente.");
+                    } catch (Exception e) {
+                        System.out.println("Error al realizar el sorteo: " + e.getMessage());
+                    }
+                    break;
+                case "3":
+                    salir = true;
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
+                    break;
+            }
+        }
+        
+        scanner.close();
+    }
+    
+}
+
+En este código se utiliza la clase Participante y la clase Sorteo que ya habían sido definidas previamente en las preguntas anteriores. En el menú, se muestra un mensaje al usuario con las opciones disponibles: cargar participantes, realizar sorteo y salir del programa. Dependiendo de la opción elegida, se llama a los métodos correspondientes de las clases Participante y Sorteo. Además, se manejan los posibles errores que puedan ocurrir durante la ejecución del programa mediante objetos Exception.
+
+Es importante que modifiques las rutas de los archivos de entrada y salida según la ubicación en tu sistema.
+        
+//otros
+        import java.util.Scanner;
+
+
+
+
+
+public class Menu {
+    private Scanner scanner;
+    private Participante participante;
+    private Sorteo sorteo;
+    private boolean isRunning;
+
+    public Menu() {
+        this.scanner = new Scanner(System.in);
+        this.participante = new Participante();
+        this.sorteo = new Sorteo();
+        this.isRunning = true;
+    }
+
+    public void run() {
+        while (isRunning) {
+            System.out.println("MENU");
+            System.out.println("1. Cargar participantes");
+            System.out.println("2. Realizar sorteo");
+            System.out.println("3. Salir del programa");
+            System.out.print("Seleccione una opcion: ");
+            int opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    cargarParticipantes();
+                    break;
+                case 2:
+                    realizarSorteo();
+                    break;
+                case 3:
+                    salir();
+                    break;
+                default:
+                    System.out.println("Opcion invalida");
+                    break;
+            }
+        }
+    }
+
+    private void cargarParticipantes() {
+        System.out.print("Ingrese la ruta del archivo CSV: ");
+        String ruta = scanner.next();
+        try {
+            participante.leerArchivo(ruta);
+            System.out.println("Participantes cargados exitosamente");
+        } catch (Exception e) {
+            System.out.println("Error al cargar los participantes: " + e.getMessage());
+        }
+    }
+
+    private void realizarSorteo() {
+        if (participante.getParticipantes().isEmpty()) {
+            System.out.println("No hay participantes cargados");
+            return;
+        }
+
+        try {
+            sorteo.realizarSorteo(participante.getParticipantes());
+            System.out.println("Sorteo realizado exitosamente");
+        } catch (Exception e) {
+            System.out.println("Error al realizar el sorteo: " + e.getMessage());
+        }
+    }
+
+    private void salir() {
+        isRunning = false;
+        System.out.println("Programa terminado");
+    }
+}
+
+Este código implementa la clase Menu que tiene un método run() que se encarga de mostrar el menú de opciones y llamar a los métodos correspondientes de las clases Participante y Sorteo según la opción seleccionada por el usuario. Además, el código incluye los métodos cargarParticipantes(), realizarSorteo() y salir() que son llamados desde el método run().
+
+Es importante tener en cuenta que este código asume que las clases Participante y Sorteo ya han sido implementadas con todos sus métodos necesarios y que se encuentran en el mismo paquete que la clase Menu.
+
