@@ -307,6 +307,7 @@ public class Menu {
 
 
 
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -542,6 +543,7 @@ public class Sorteo {
         return participantes.get(index);
     }
 }
+
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -994,7 +996,7 @@ public class Participante {
 
 
 
-//version mas completa segun gpt
+//version mas completa
                 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
